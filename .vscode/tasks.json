@@ -1,0 +1,115 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "node",
+			"dockerBuild": {
+				"dockerfile": "${workspaceFolder}/my-app/Dockerfile",
+				"context": "${workspaceFolder}/my-app",
+				"pull": true
+			},
+			"node": {
+				"package": "${workspaceFolder}/my-app/package.json"
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: release",
+			"dependsOn": [
+				"docker-build: release"
+			],
+			"dockerRun": {
+				"os": "Windows"
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/Backend/Testestest/Testestest.csproj"
+			}
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug",
+			"dependsOn": [
+				"docker-build: debug"
+			],
+			"dockerRun": {
+				"os": "Windows"
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/Backend/Testestest/Testestest.csproj",
+				"enableDebugging": true
+			}
+		},
+		{
+			"label": "build",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"build",
+				"${workspaceFolder}/Backend/Testestest/Testestest.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "publish",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"publish",
+				"${workspaceFolder}/Backend/Testestest/Testestest.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"label": "watch",
+			"command": "dotnet",
+			"type": "process",
+			"args": [
+				"watch",
+				"run",
+				"${workspaceFolder}/Backend/Testestest/Testestest.csproj",
+				"/property:GenerateFullPaths=true",
+				"/consoleloggerparameters:NoSummary"
+			],
+			"problemMatcher": "$msCompile"
+		},
+		{
+			"type": "docker-build",
+			"label": "docker-build: debug",
+			"dependsOn": [
+				"build"
+			],
+			"dockerBuild": {
+				"tag": "reactdockerize:dev",
+				"target": "base",
+				"dockerfile": "${workspaceFolder}/Backend/Testestest/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/Backend/Testestest/Testestest.csproj"
+			}
+		},
+		{
+			"type": "docker-build",
+			"label": "docker-build: release",
+			"dependsOn": [
+				"build"
+			],
+			"dockerBuild": {
+				"tag": "reactdockerize:latest",
+				"dockerfile": "${workspaceFolder}/Backend/Testestest/Dockerfile",
+				"context": "${workspaceFolder}",
+				"pull": true
+			},
+			"netCore": {
+				"appProject": "${workspaceFolder}/Backend/Testestest/Testestest.csproj"
+			}
+		}
+	]
+}
