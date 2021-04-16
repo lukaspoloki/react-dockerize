@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  backend:
+    image: backend:${TAG:-latest}
+    build:
+      context: ../Backend
+      dockerfile: Backend/Dockerfile
+    ports:
+      - "5000:5000"
+  frontend:
+    command: npm run start
+    build:
+      context: ../Frontend
+      dockerfile: Frontend/Dockerfile
+    ports:
+      - "3000:3000"
